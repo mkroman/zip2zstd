@@ -11,5 +11,10 @@ license = "MIT OR Apache-2.0"
 anyhow = "1.0"
 clap = "2.33"
 num_cpus = "1.13"
+tar = "0.4"
 zip = "0.5"
 zstd = { version = "0.5", features = ["zstdmt"] }
+
+[profile.release]
+codegen-units = 1
+lto = true
