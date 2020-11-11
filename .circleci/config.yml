@@ -14,7 +14,7 @@ jobs:
           command: rustup target add x86_64-unknown-linux-musl
       - run:
           name: Install musl-gcc
-          command: apt update && apt install -y musl-gcc && rm -rf /var/lib/apt/lists/*
+          command: sudo apt update && sudo apt install -y musl-gcc && sudo rm -rf /var/lib/apt/lists/*
       - run:
           name: Build
           command: cargo build --verbose
