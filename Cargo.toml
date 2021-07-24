@@ -13,7 +13,7 @@ clap = "2.33"
 num_cpus = "1.13"
 tar = "0.4"
 zip = "0.5"
-zstd = { version = "0.6", features = ["zstdmt"] }
+zstd = { version = "0.9", features = ["zstdmt"] }
 
 [profile.release]
 codegen-units = 1
