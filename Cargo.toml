@@ -5,14 +5,17 @@ authors = ["Mikkel Kroman <mk@maero.dk>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
 description = "Extracts a zip archive and converts it to a tar while compressing it with zstd"
+repository = "https://github.com/mkroman/zip2zstd"
+categories = ["command-line-utilities", "compression"]
+keywords = ["zip", "zstd", "tar", "compression"]
 
 [dependencies]
 anyhow = "1.0"
 num_cpus = "1.13"
+structopt = "0.3"
 tar = "0.4"
 zip = "0.5"
 zstd = { version = "0.9", features = ["zstdmt"] }
-structopt = "0.3"
 
 [profile.release]
 codegen-units = 1
