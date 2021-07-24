@@ -4,16 +4,15 @@ version = "0.1.0"
 authors = ["Mikkel Kroman <mk@maero.dk>"]
 edition = "2018"
 license = "MIT OR Apache-2.0"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "Extracts a zip archive and converts it to a tar while compressing it with zstd"
 
 [dependencies]
 anyhow = "1.0"
-clap = "2.33"
 num_cpus = "1.13"
 tar = "0.4"
 zip = "0.5"
 zstd = { version = "0.9", features = ["zstdmt"] }
+structopt = "0.3"
 
 [profile.release]
 codegen-units = 1

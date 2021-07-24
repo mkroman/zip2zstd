@@ -1,13 +1,16 @@
 use std::fs::File;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use anyhow::Context;
-use clap::{crate_authors, crate_name, crate_version, App, Arg};
+use structopt::StructOpt;
 use zip::ZipArchive;
+
+mod cli;
 
 fn process_zip_archive<P1: AsRef<Path>, P2: AsRef<Path>>(
     archive_path: P1,
     output_path: P2,
+    compression_level: i32,
 ) -> Result<(), anyhow::Error> {
     let file = File::open(archive_path.as_ref())
         .with_context(|| format!("Failed to open zip file {:?}", archive_path.as_ref()))?;
@@ -17,7 +20,8 @@ fn process_zip_archive<P1: AsRef<Path>, P2: AsRef<Path>>(
     let num_threads = num_cpus::get();
 
     // Create the zstandard encoder
-    let mut encoder = zstd::Encoder::new(output_file, 0).with_context(|| "Creating encoder")?;
+    let mut encoder =
+        zstd::Encoder::new(output_file, compression_level).with_context(|| "Creating encoder")?;
     encoder
         .multithread(num_threads as u32)
         .with_context(|| format!("Setting zstd thread count to {}", num_threads))?;
@@ -53,27 +57,11 @@ fn process_zip_archive<P1: AsRef<Path>, P2: AsRef<Path>>(
 }
 
 fn main() -> anyhow::Result<()> {
-    let matches = App::new(crate_name!())
-        .version(crate_version!())
-        .author(crate_authors!("\n"))
-        .about("Extracts a zip archive and converts it to a tar while compressing it with zstd")
-        .arg(
-            Arg::with_name("zip")
-                .required(true)
-                .value_name("ZIP ARCHIVE"),
-        )
-        .arg(
-            Arg::with_name("output")
-                .value_name("OUTPUT FILE")
-                .required(true),
-        )
-        .get_matches();
+    let opts = cli::Opts::from_args();
+    let output_path = opts.output.as_path();
 
-    let archive_path: PathBuf = matches.value_of("zip").unwrap().into();
-    let output_path: PathBuf = matches.value_of("output").unwrap().into();
-
-    process_zip_archive(archive_path.as_path(), output_path.as_path())
-        .with_context(|| format!("Writing to {:?}", output_path.as_path()))?;
+    process_zip_archive(opts.input, output_path, opts.compression_level)
+        .with_context(|| format!("Writing to {:?}", output_path))?;
 
     Ok(())
 }
